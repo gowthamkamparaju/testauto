@@ -55,3 +55,19 @@ resource "aws_instance" "commit_instances" {
   EOF
 
 }
+
+
+
+output "instance_ids" {
+
+  value = aws_instance.commit_instances[*].id
+
+}
+
+
+
+output "public_ips" {
+
+  value = aws_instance.commit_instances[*].public_ip
+
+}
