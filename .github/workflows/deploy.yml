@@ -29,15 +29,26 @@ jobs:
           ls -l /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install -y terraform
+
+      - name: Set Terraform Working Directory
+        run: |
+         mkdir -p terraform-config
+         cd terraform-config
+         echo 'terraform {requried_providers {aws = {source = "hashicorp/aws" , version ="~> 5.0" }
+         echo 'provider "aws" {region = "ap-south=1" }' >> main.tf
  
       - name: Initialize Terraform
         run: terraform init
+        working-directory: terraform-config
  
       - name: Validate Terraform Configuration
         run: terraform validate
  
-      #- name: Plan Terraform Deployment
-        #run: terraform plan -out=tfplan
+      - name: Plan Terraform Deployment
+        run: terraform plan -out=tfplan
+        working-directory: terraform-config
+
  
       - name: Apply Terraform Configuration
-        run: terraform apply -auto-approve 
+        run: terraform apply -auto-approve tfplan
+        working-directory: terraform-config
