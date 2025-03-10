@@ -1,63 +1,40 @@
 name: Deploy EC2 on GitHub Commit
-
-
-
+ 
 on:
   push:
     branches:
-      - main 
-
-
+      - main  # Triggers when commits are pushed to the main branch
+ 
 jobs:
-
-  deploy:
-
-    runs-on: ubuntu-latest
-
-
-
-    steps:
-
-      - name: Checkout Repository
-
-        uses: actions/checkout@v2
-
-
-
-      - name: Configure AWS Credentials
-
-        uses: aws-actions/configure-aws-credentials@v1
-
-        with:
-
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_IDS }}
-
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEYS }}
-
-          aws-region: ap-south-1  # Change to your region
-
-
-
-      - name: Install Terraform
-
-        run: |
-
-          sudo apt update && sudo apt install -y unzip
-
+  deploy:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+ 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_IDS }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEYS }}
+          aws-region: ap-south-1  # Change to your AWS region
+ 
+      - name: Install Terraform
+        run: |
+          sudo apt update && sudo apt install -y unzip curl gnupg software-properties-common
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-
-          sudo apt update && sudo apt install terraform
-
-
-
-      - name: Initialize Terraform
-
-        run: terraform init
-
-
-
-      - name: Apply Terraform Configuration
-
-        run: terraform apply -auto-approve
+          sudo apt update && sudo apt install -y terraform
+ 
+      - name: Initialize Terraform
+        run: terraform init
+ 
+      - name: Validate Terraform Configuration
+        run: terraform validate
+ 
+      - name: Plan Terraform Deployment
+        run: terraform plan -out=tfplan
+ 
+      - name: Apply Terraform Configuration
+        run: terraform apply -auto-approve tfplan
