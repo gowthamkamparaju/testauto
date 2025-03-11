@@ -54,6 +54,10 @@ jobs:
          resource "aws_instance" "example" {
            ami          ="ami-08bb6a6800f0f03502"  # Replace with your AMI ID
            instance_type = "t2.micro"
+          
+         }
+          output "instance_id" {
+           value=aws_instance.example.id
          }
           EOF
  
