@@ -3,7 +3,7 @@ name: Deploy EC2 on GitHub Commit
 on:
   push:
     branches:
-      - main  # Triggers when commits are pushed to the main branch
+      - main  # Triggers when commits are pushed to main branch
  
 jobs:
   deploy:
