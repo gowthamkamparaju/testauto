@@ -52,7 +52,7 @@ jobs:
            region = "ap-south=1"
          }
          resource "aws_instance" "example" {
-           ami          ="ami-08bb6a6800f0f03502"  # Replace with your AMI ID
+           ami          ="ami-05c179eced2eb9b5b"  # Replace with your AMI ID
            instance_type = "t2.micro"
           
          }
