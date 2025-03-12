@@ -28,7 +28,7 @@ resource "aws_instance" "commit_instances" {
 
   count         = 1  # Creates 1 instances per push
 
-  ami           = "ami-08bb6a6800f0f03502"  # Replace  your AMI ID
+  ami           = "ami-05c179eced2eb9b5b"  # Replace  your AMI ID
 
   instance_type = "t2.micro"
 
