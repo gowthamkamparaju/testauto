@@ -26,7 +26,7 @@ provider "aws" {
 
 resource "aws_instance" "commit_instances" {
 
-  count         = 2  # Creates 1 instances per push
+  count         = 1  # Creates 1 instances per push
 
   ami           = "ami-05c179eced2eb9b5b"  # Replace  your AMI ID
 
