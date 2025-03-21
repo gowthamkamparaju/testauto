@@ -38,7 +38,7 @@ resource "aws_instance" "commit_instances" {
 
   tags = {
 
-    Name = "GitHub-Commit-Instance-${count.index + 1}"
+    Name = "GitHub-Commit-Instance-${count.index + 1}""
 
   }
 
