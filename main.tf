@@ -28,7 +28,7 @@ resource "aws_instance" "commit_instances" {
 
   count         = 1
 
-  ami           = "ami-05c1792ced2b9b5b" # Replace with your AMI ID
+  ami           = "ami-05c179eced2eb9b5b" # Replace with your AMI ID
 
   instance_type = "t2.micro"
 
