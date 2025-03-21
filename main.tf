@@ -1,21 +1,12 @@
 terraform {
-
-  required_providers {
-
-    aws = {
-
-      source  = "hashicorp/aws"
-
-      version = "~> 5.0"
+ required_providers {
+   aws = {
+     source  = "hashicorp/aws"
+     version = "~> 5.0"
 
     }
 
   }
-
-}
-
-
-
 provider "aws" {
 
   region = "ap-south-1"
@@ -26,11 +17,9 @@ provider "aws" {
 
 resource "aws_instance" "commit_instances" {
 
-  count = 1  # Adjust if needed
+  count         = 1  # Adjust if needed
 
-
-
-  ami           = "ami-05c1f92ced2b9b5b5"  # Replace with your AMI ID
+  ami           = "ami-05c1f92ced2b9b55b"  # Replace with your AMI ID
 
   instance_type = "t2.micro"
 
@@ -38,8 +27,10 @@ resource "aws_instance" "commit_instances" {
 
   tags = {
 
-    Name = "GitHub-Commit-Instance-${count.index + 1}""
+    Name = "GitHub-Commit-Instance-${count.index + 1}"
 
   }
 
 }
+}
+
