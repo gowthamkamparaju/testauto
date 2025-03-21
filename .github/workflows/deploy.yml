@@ -37,8 +37,9 @@ jobs:
       - name: Set Terraform Working Directory
         run: |
          mkdir -p terraform-config
-         cd <<EOF > terraform-config/main.tf
-         #echo 'terraform { requried_providers { aws = { source = "hashicorp/aws" , version ="~> 5.0" } } }' > main.tf
+         cd terraform-config
+         cat <<EOF > main.tf
+         
          terraform {
           required_providers {
             aws = {
@@ -47,7 +48,7 @@ jobs:
              }
             }
           }  
-         #echo 'provider "aws" {region = "ap-south=1" }' >> main.tf
+         
          provider "aws" {
            region = "ap-south=1"
          }
@@ -60,6 +61,7 @@ jobs:
            value=aws_instance.example.id
          }
           EOF
+          ls -la
  
       - name: Initialize Terraform
         run: terraform init
