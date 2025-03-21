@@ -18,7 +18,7 @@ terraform {
 
 provider "aws" {
 
-  region = "ap-south-1"  # Change this to your AWS region
+  region = "ap-south-1"
 
 }
 
@@ -26,9 +26,11 @@ provider "aws" {
 
 resource "aws_instance" "commit_instances" {
 
-  count         = 1  # Creates 1 instances per push
+  count = 1  # Adjust if needed
 
-  ami           = "ami-05c179eced2eb9b5b"  # Replace  your AMI ID
+
+
+  ami           = "ami-05c1f92ced2b9b5b5"  # Replace with your AMI ID
 
   instance_type = "t2.micro"
 
@@ -39,35 +41,5 @@ resource "aws_instance" "commit_instances" {
     Name = "GitHub-Commit-Instance-${count.index + 1}"
 
   }
-
-
-
-  user_data = <<-EOF
-
-  #!/bin/bash
-
-  echo "Instance started. Monitoring for 10 minutes."
-
-  sleep 600  # 10 minutes
-
-  shutdown -h now
-
-  EOF
-
-}
-
-
-
-output "instance_ids" {
-
-  value = aws_instance.commit_instances[*].id
-
-}
-
-
-
-output "public_ips" {
-
-  value = aws_instance.commit_instances[*].public_ip
 
 }
