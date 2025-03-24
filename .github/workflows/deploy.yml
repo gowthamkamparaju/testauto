@@ -71,8 +71,7 @@ jobs:
 
          }
          
-          EOF
-          ls -la
+         EOF
  
       - name: Initialize Terraform
         run: terraform init
