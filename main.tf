@@ -28,15 +28,13 @@ resource "aws_instance" "commit_instances" {
 
   count         = 1
 
-  ami           = "ami-05c179eced2eb9b5b" # Replace with your AMI ID
+  ami           = "ami-05c1792ced2b9b5b"
 
   instance_type = "t2.micro"
 
-
-
   tags = {
 
-    Name = "GitHub-Commit-Instance-"+timestamp()
+    Name = "GitHub-Commit-Instance-${timestamp()}"
 
   }
 
