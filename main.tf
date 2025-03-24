@@ -34,9 +34,12 @@ resource "aws_instance" "commit_instances" {
 
   tags = {
 
-    Name = "GitHub-Commit-Instance-${timestamp()}"
+    Name = "GitHub-Commit-Instance-"+ local.timestamp_string
 
   }
+  locals {
+   timestamp_string = timestamp()
+  }
 
 }
 
