@@ -26,29 +26,24 @@ provider "aws" {
 
 resource "aws_instance" "commit_instances" {
 
-  count         = 1
+  count = 1  # Adjust if needed
 
-  ami           = "ami-05c1792ced2b9b5b"
+
+
+  ami           = "ami-05c1f92ced2b9b5b5"  # Replace with your AMI ID
 
   instance_type = "t2.micro"
 
+
+
   tags = {
 
-    Name = "GitHub-Commit-Instance-"+ local.timestamp_string
+    Name = "GitHub-Commit-Instance-${count.index + 1}"
 
   }
-  locals {
-   timestamp_string = timestamp()
-  }
 
 }
-
-
-
 output "instance_public_ip" {
-
-  value       = aws_instance.commit_instances[0].public_ip
-
-  description = "Public IP address of the EC2 instance"
-
+  value       = aws_instance.commit_instances[0].public_ip
+  description = "Public IP address of the EC2 instance"
 }
