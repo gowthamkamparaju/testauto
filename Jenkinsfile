@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
+        DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws')
         DOCKER_IMAGE = "gowthamkamparaju/demousr"
     }
 
