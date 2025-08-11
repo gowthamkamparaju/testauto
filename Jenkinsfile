@@ -15,31 +15,36 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:latest .'
+                script {
+                    sh 'docker build -t $DOCKER_IMAGE:latest .'
+                }
             }
         }
 
         stage('Test Application') {
             steps {
-                sh 'echo "Running tests..."'
+                script {
+                    // If you have tests, run them here
+                    sh 'echo "Running tests..."'
+                }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh '''
-                    echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin
-                    docker push $DOCKER_IMAGE:latest
-                '''
+                script {
+                    sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
+                    sh 'docker push $DOCKER_IMAGE:latest'
+                }
             }
         }
 
         stage('Deploy with Ansible') {
             steps {
-                sh '''
+                sh """
                     export ANSIBLE_HOST_KEY_CHECKING=False
                     ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-                '''
+                """
             }
         }
     }
