@@ -1,28 +1,36 @@
+---
 - name: Deploy application with Docker
   hosts: webserver
   become: yes
-  tasks:
-    - name: Update apt packages
-      apt:
-        update_cache: yes
+  vars:
+    docker_image: "{{ docker_image | default('gowthamkamparaju/demousr') }}"
+    image_tag: "{{ image_tag | default('1.0') }}"
 
-    - name: Install Docker
+  tasks:
+    - name: Ensure Docker is installed
       apt:
         name: docker.io
         state: present
+        update_cache: yes
 
-    - name: Start Docker service
+    - name: Ensure Docker service is running
       service:
         name: docker
         state: started
         enabled: yes
 
+    - name: Stop and remove existing container
+      docker_container:
+        name: myapp
+        state: absent
+        force_kill: yes
+
     - name: Run Node.js app container
       docker_container:
-        name: my-node-app
-        image: gowthamkamparaju/demousr:latest
+        name: myapp
+        image: "{{ docker_image }}:{{ image_tag }}"
         state: started
         restart_policy: always
-        ports:
+        published_ports:
           - "3000:3000"
           
