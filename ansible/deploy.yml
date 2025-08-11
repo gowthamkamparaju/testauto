@@ -1,0 +1,39 @@
+---
+- name: Deploy app container on webserver
+  hosts: webserver
+  become: yes
+ 
+  vars:
+    image: "gowthamkamparaju/demousr:latest"
+    container_name: "myapp"
+    host_port: 8081       # change to 80 or as needed
+    container_port: 3000
+ 
+  tasks:
+    - name: Ensure docker is installed
+      apt:
+name: docker.io
+        state: present
+        update_cache: yes
+ 
+    - name: Pull latest image
+      shell: docker pull {{ image }}
+      args:
+        warn: false
+ 
+    - name: Stop and remove existing container (if any)
+      shell: |
+        if docker ps -a --format '{{"{{.Names}}"}}' | grep -w {{ container_name }}; then
+          docker rm -f {{ container_name }}
+        fi
+      args:
+        warn: false
+      ignore_errors: true
+ 
+    - name: Run new container
+      shell: >
+        docker run -d --name {{ container_name }}
+        -p {{ host_port }}:{{ container_port }}
+        --restart always {{ image }}
+      args:
+        warn: false
