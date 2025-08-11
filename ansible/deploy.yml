@@ -1,4 +1,3 @@
----
 - name: Deploy application with Docker
   hosts: webserver
   become: yes
@@ -18,9 +17,12 @@
         state: started
         enabled: yes
 
-    - name: Run hello-world container
+    - name: Run Node.js app container
       docker_container:
-        name: hello-world
-        image: hello-world
+        name: my-node-app
+        image: gowthamkamparaju/demousr:latest
         state: started
-        
+        restart_policy: always
+        ports:
+          - "3000:3000"
+          
