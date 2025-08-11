@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws')
+        DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws') // Docker Hub creds in Jenkins
         DOCKER_IMAGE = "gowthamkamparaju/demousr"
-        ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
     stages {
@@ -16,21 +15,31 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:latest .'
+                script {
+                    sh 'docker build -t $DOCKER_IMAGE:latest .'
+                }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
-                sh 'docker push $DOCKER_IMAGE:latest'
+                script {
+                    sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
+                    sh 'docker push $DOCKER_IMAGE:latest'
+                }
             }
         }
 
         stage('Deploy with Ansible') {
             steps {
-                dir('ansible') { // Go into ansible folder
-                    sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini deploy.yml'
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', 
+                                                   keyFileVariable: 'SSH_KEY')]) {
+                    dir('ansible') { // Move into ansible folder where deploy.yml & inventory.ini exist
+                        sh '''
+                            ANSIBLE_HOST_KEY_CHECKING=False \
+                            ansible-playbook -i inventory.ini deploy.yml --private-key $SSH_KEY
+                        '''
+                    }
                 }
             }
         }
