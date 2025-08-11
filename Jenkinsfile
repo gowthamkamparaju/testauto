@@ -4,48 +4,34 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws')
         DOCKER_IMAGE = "gowthamkamparaju/demousr"
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/gowthamkamparaju/testauto.git'
+                git branch: 'feature', url: 'https://github.com/gowthamkamparaju/testauto.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $DOCKER_IMAGE:latest .'
-                }
-            }
-        }
-
-        stage('Test Application') {
-            steps {
-                script {
-                    // If you have tests, run them here
-                    sh 'echo "Running tests..."'
-                }
+                sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE:latest'
-                }
+                sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
+                sh 'docker push $DOCKER_IMAGE:latest'
             }
         }
 
         stage('Deploy with Ansible') {
             steps {
-                sh """
-                    dir('ansible')
-                    export ANSIBLE_HOST_KEY_CHECKING=False
-                    ansible-playbook -i inventory.ini deploy.yml
-                """
+                dir('ansible') { // Go into ansible folder
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini deploy.yml'
+                }
             }
         }
     }
