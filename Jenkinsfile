@@ -39,11 +39,11 @@ pipeline {
             }
         }
 
-        stage('Deploy to Server') {
+        stage('Deploy with Ansible') {
             steps {
-                script {
-                    // Example: SSH to server and pull image
-                    sh 'echo "Deploy step placeholder"'
+                sh """
+                ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                """
                 }
             }
         }
