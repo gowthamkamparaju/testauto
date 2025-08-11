@@ -9,41 +9,37 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'feature', url: 'https://github.com/gowthamkamparaju/testauto.git'
+                git branch: 'main', url: 'https://github.com/gowthamkamparaju/testauto.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $DOCKER_IMAGE:latest .'
-                }
+                sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
 
         stage('Test Application') {
             steps {
-                script {
-                    // If you have tests, run them here
-                    sh 'echo "Running tests..."'
-                }
+                sh 'echo "Running tests..."'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE:latest'
-                }
+                sh '''
+                    echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin
+                    docker push $DOCKER_IMAGE:latest
+                '''
             }
         }
 
         stage('Deploy with Ansible') {
             steps {
-                sh """
+                sh '''
+                    export ANSIBLE_HOST_KEY_CHECKING=False
                     ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-                """
+                '''
             }
         }
     }
