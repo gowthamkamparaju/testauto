@@ -43,7 +43,8 @@ pipeline {
             steps {
                 sh """
                     export ANSIBLE_HOST_KEY_CHECKING=False
-                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                    cd ansible
+                    ansible-playbook -i inventory.ini deploy.yml
                 """
             }
         }
