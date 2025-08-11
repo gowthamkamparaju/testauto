@@ -1,5 +1,5 @@
 ---
-- name: Deploy application with Docker
+- name: Deploy Node.js application with Docker
   hosts: webserver
   become: yes
 
@@ -19,19 +19,18 @@
         state: started
         enabled: yes
 
-    - name: Pull app image from Docker Hub
+    - name: Pull latest app image from Docker Hub
       docker_image:
         name: gowthamkamparaju/demousr
-        tag: "{{ docker_image_tag }}"
+        tag: 1.0
         source: pull
-        force_source: true
 
     - name: Run Node.js app container
       docker_container:
         name: my-node-app
-        image: "gowthamkamparaju/demousr:{{ docker_image_tag }}"
+        image: gowthamkamparaju/demousr:latest
         state: started
         restart_policy: always
-        published_ports:
+        ports:
           - "3000:3000"
           
