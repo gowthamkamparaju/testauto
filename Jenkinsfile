@@ -24,7 +24,7 @@ pipeline {
         stage('Test Application') {
             steps {
                 script {
-                    // If you have tests, run them here
+                    // If you have tests, 
                     sh 'echo "Running tests..."'
                 }
             }
