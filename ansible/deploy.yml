@@ -24,6 +24,7 @@
         name: gowthamkamparaju/demousr
         tag: 1.0
         source: pull
+        force_source: true
 
     - name: Run Node.js app container
       docker_container:
