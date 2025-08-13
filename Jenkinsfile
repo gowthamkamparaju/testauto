@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws')
-        SSH_KEY = credentials('aws-ssh-key') // SSH key from Jenkins
+        SSH_KEY = credentials('aws-ssh-key') // SSH keys from Jenkins
         DOCKER_IMAGE = "gowthamkamparaju/demousr"
     }
 
