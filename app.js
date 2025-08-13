@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
  
 app.get('/', (req, res) => {
-  res.send('Hello from Jenkins Docker on AWS');
+  res.send('Hello from Jenkins + Docker on AWS');
 });
  
 app.listen(3000, () => {
