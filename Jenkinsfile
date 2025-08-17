@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('jenkins-aws')
+        SSH_KEY = credentials('aws-ssh-key') // 
         DOCKER_IMAGE = "gowthamkamparaju/demousr"
     }
 
@@ -15,36 +16,24 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $DOCKER_IMAGE:latest .'
-                }
-            }
-        }
-
-        stage('Test Application') {
-            steps {
-                script {
-                    // If you have tests, 
-                    sh 'echo "Running tests..."'
-                }
+                sh 'docker build --no-cache -t $DOCKER_IMAGE:1.0 .'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE:latest'
-                }
+                sh 'echo "$DOCKER_HUB_CREDENTIALS_PSW" | docker login -u "$DOCKER_HUB_CREDENTIALS_USR" --password-stdin'
+                sh 'docker push $DOCKER_IMAGE:1.0'
             }
         }
 
-        stage('Deploy to Server') {
+        stage('Deploy with Ansible') {
             steps {
-                script {
-                    // Example: SSH to server and pull image
-                    sh 'echo "Deploy step placeholder"'
-                }
+                sh """
+                    ANSIBLE_HOST_KEY_CHECKING=False \
+                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+                    --private-key "$SSH_KEY"
+                """
             }
         }
     }
