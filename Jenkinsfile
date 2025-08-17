@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/gowthamkamparaju/testauto.git'
+                git branch: 'feature', url: 'https://github.com/gowthamkamparaju/testauto.git'
             }
         }
 
