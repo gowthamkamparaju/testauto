@@ -1,12 +1,6 @@
----
----
 - name: Deploy Node.js application with Docker
   hosts: webserver
   become: yes
-  vars:
-    docker_image: "{{ docker_image | default('gowthamkamparaju/demousr') }}"
-    docker_tag: "{{ docker_tag | default('latest') }}"
-    app_port: "{{ app_port | default('3000') }}"
 
   tasks:
     - name: Update apt packages
@@ -24,18 +18,18 @@
         state: started
         enabled: yes
 
-    - name: Pull latest Docker image
-      community.docker.docker_image:
+    - name: Pull latest app image from Docker Hub
+      docker_image:
         name: "{{ docker_image }}"
         tag: "{{ docker_tag }}"
         source: pull
 
-    - name: Run Node.js container
-      community.docker.docker_container:
+    - name: Run Node.js app container
+      docker_container:
         name: my-node-app
         image: "{{ docker_image }}:{{ docker_tag }}"
         state: started
         restart_policy: always
         ports:
-          - "{{ app_port }}:3000"
+          - "{{ app_port }}:{{ app_port }}"
           
