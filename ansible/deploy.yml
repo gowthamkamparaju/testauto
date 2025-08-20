@@ -1,3 +1,4 @@
+---
 - name: Deploy Node.js application with Docker
   hosts: webserver
   become: yes
@@ -18,11 +19,17 @@
         state: started
         enabled: yes
 
+    - name: Stop and remove old container if exists
+      docker_container:
+        name: my-node-app
+        state: absent
+
     - name: Pull latest app image from Docker Hub
       docker_image:
         name: "{{ docker_image }}"
         tag: "{{ docker_tag }}"
         source: pull
+        force_source: true   # ensures latest image is pulled always
 
     - name: Run Node.js app container
       docker_container:
