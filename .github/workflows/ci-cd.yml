@@ -1,4 +1,4 @@
-    name: CI/CD Pipeline (Docker + Ansible + SonarCloud)
+name: CI/CD Pipeline (Docker + Ansible + SonarCloud)
 
 on:
   push:
