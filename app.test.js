@@ -1,9 +1,14 @@
-// app.test.js
 const request = require("supertest");
-const app = require("./app");  // ensure app.js exports the Express app
+const app = require("./app");
 
-test("GET / should return Hello World", async () => {
-  const res = await request(app).get("/");
-  expect(res.statusCode).toBe(200);
-  expect(res.text).toBe("Hello World");
+describe("App Routes", () => {
+  it("should return 200 OK on /", async () => {
+    const res = await request(app).get("/");
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("should return Hello message", async () => {
+    const res = await request(app).get("/");
+    expect(res.text).toContain("Hello from Jenkins + Docker on AWS!");
+  });
 });
