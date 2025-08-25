@@ -5,8 +5,8 @@ app.get("/", (req, res) => {
   res.send("Hello from Jenkins + Docker on AWS!");
 });
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log("App running on port 3000");
 });
 
-module.exports = app; //  Add this line
+module.exports = { app, server };
