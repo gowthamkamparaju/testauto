@@ -1,8 +1,8 @@
-name: CI/CD Pipeline (Docker + Ansible + SonarCloud)
+    name: CI/CD Pipeline (Docker + Ansible + SonarCloud)
 
 on:
   push:
-    branches: [ "main" ]        # ✓Only trigger on main branch
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -12,34 +12,55 @@ env:
   APP_PORT: "3000"
 
 jobs:
-  sonarcloud:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Important for proper analysis
 
-      - name: Set up JDK (needed by Sonar)
-        uses: actions/setup-java@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=gowthamkamparaju_testauto
             -Dsonar.organization=gowthamkamparaju
-            -Dsonar.sources=.
-            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
   build_and_push:
     runs-on: ubuntu-latest
-    needs: sonarcloud   #  Run only after Sonar passes
+    needs: sonarcloud
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -65,7 +86,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push
-    if: github.ref == 'refs/heads/main'   # ✅ Deploy only if main branch
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
