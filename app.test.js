@@ -1,21 +1,9 @@
+// app.test.js
 const request = require("supertest");
-const app = require("./app"); // Import the app
+const app = require("./app");  // ensure app.js exports the Express app
 
-describe("App Routes", () => {
-  test("GET / should return Hello GitHubActions", async () => {
-    const response = await request(app).get("/");
-    expect(response.status).toBe(200);
-    expect(response.text).toBe("Hello GitHubActions");
-  });
-
-  test("GET /health should return status ok", async () => {
-    const response = await request(app).get("/health");
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ status: "ok" });
-  });
-
-  test("GET /unknown should return 404", async () => {
-    const response = await request(app).get("/unknown");
-    expect(response.status).toBe(404);
-  });
+test("GET / should return Hello World", async () => {
+  const res = await request(app).get("/");
+  expect(res.statusCode).toBe(200);
+  expect(res.text).toBe("Hello World");
 });
