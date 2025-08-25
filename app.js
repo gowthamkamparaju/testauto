@@ -2,11 +2,11 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Hello from Jenkins + Docker on AWS!");
 });
 
-if (require.main === module) {
-  app.listen(3000, () => console.log("Server running on port 3000"));
-}
+app.listen(3000, () => {
+  console.log("App running on port 3000");
+});
 
-module.exports = app;   // <-- export app for testing
+module.exports = app; //  Add this line
